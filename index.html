@@ -553,38 +553,23 @@ footer strong{color:var(--vg);}
     return false;
   });
 
-  // Block text selection
+  // Block text selection (except inside form fields)
   document.addEventListener('selectstart', function(e){
+    const tag = e.target.tagName;
+    if(tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable) return;
     e.preventDefault();
     return false;
   });
 
-  // Detect DevTools open via size change
-  const threshold = 160;
-  function detectDevTools(){
-    if(
-      window.outerWidth - window.innerWidth > threshold ||
-      window.outerHeight - window.innerHeight > threshold
-    ){
-      document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#05050a;color:#f0f0ff;font-family:sans-serif;font-size:1.2rem;text-align:center;flex-direction:column;gap:16px;"><div style="font-size:3rem">🔒</div><div>Acceso no permitido.</div><div style="font-size:.9rem;opacity:.5;">Recargá la página para continuar.</div></div>';
-    }
-  }
-  window.addEventListener('resize', detectDevTools);
-
-  // Debugger trap
-  setInterval(function(){
-    const start = performance.now();
-    (function(){})['constructor']('debugger')();
-    if(performance.now() - start > 100){
-      document.body.style.display='none';
-    }
-  }, 3000);
-
   // Disable drag
   document.addEventListener('dragstart', function(e){ e.preventDefault(); });
 
-  // Disable copy
-  document.addEventListener('copy', function(e){ e.preventDefault(); });
+  // Disable copy (except inside form fields)
+  document.addEventListener('copy', function(e){
+    const tag = e.target.tagName;
+    if(tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable) return;
+    e.preventDefault();
+  });
 
 })();
 </script>
